@@ -1,13 +1,12 @@
 package dev.crackle2k.imtelling;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
 import java.util.Locale;
@@ -43,6 +42,13 @@ public final class CommandSnitchListener implements Listener {
         }
     }
 
+    // RemoteServerCommandEvent (RCON) has its own HandlerList on modern Paper,
+    // so a ServerCommandEvent handler alone never sees RCON commands.
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onRemoteCommand(RemoteServerCommandEvent event) {
+        onConsoleCommand(event);
+    }
+
     private boolean isExempt(Player player) {
         FileConfiguration config = plugin.getConfig();
         if (config.getBoolean("exempt-permission-enabled", false) && player.hasPermission("imtelling.exempt")) {
@@ -71,25 +77,14 @@ public final class CommandSnitchListener implements Listener {
     private void snitch(String playerName, String command) {
         FileConfiguration config = plugin.getConfig();
 
-        if (config.getBoolean("minecraft.enabled", true)) {
-            String raw = config.getString("minecraft.format",
-                            "<red><bold>SNITCH</bold></red> <yellow>{player}</yellow> <gray>used</gray> <white>{command}</white>")
-                    .replace("{player}", playerName)
-                    .replace("{command}", command);
-            Component message = MiniMessage.miniMessage().deserialize(raw);
-            if ("permission".equalsIgnoreCase(config.getString("minecraft.audience", "everyone"))) {
-                plugin.getServer().broadcast(message, "imtelling.notify");
-                plugin.getServer().getConsoleSender().sendMessage(message);
-            } else {
-                plugin.getServer().broadcast(message);
-            }
-        }
+        String minecraftMessage = config.getString("minecraft.format",
+                        "<red><bold>SNITCH</bold></red> <yellow>{player}</yellow> <gray>used</gray> <white>{command}</white>")
+                .replace("{player}", playerName)
+                .replace("{command}", command);
+        String discordMessage = config.getString("discord.format", ":rotating_light: **{player}** used `{command}`")
+                .replace("{player}", playerName)
+                .replace("{command}", command);
 
-        if (config.getBoolean("discord.enabled", false)) {
-            String discordMessage = config.getString("discord.format", ":rotating_light: **{player}** used `{command}`")
-                    .replace("{player}", playerName)
-                    .replace("{command}", command);
-            plugin.discordNotifier().send(discordMessage);
-        }
+        plugin.alert(minecraftMessage, discordMessage);
     }
 }

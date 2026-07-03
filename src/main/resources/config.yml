@@ -70,3 +70,12 @@ discord:
   channel-id: ''
   # Placeholders: {player}, {command}
   format: ':rotating_light: **{player}** used `{command}`'
+
+grim:
+  # Relay GrimAC anticheat flags to Minecraft chat and Discord.
+  # Only active when the GrimAC plugin is installed. Alerts respect the
+  # minecraft.* and discord.* toggles above.
+  enabled: true
+  # Placeholders: {player}, {check}, {violations}, {verbose}
+  minecraft-format: '<dark_red><bold>GRIM</bold></dark_red> <yellow>{player}</yellow> <gray>failed</gray> <white>{check}</white> <gray>(VL {violations})</gray>'
+  discord-format: ':no_entry: **{player}** failed **{check}** (VL {violations}) `{verbose}`'

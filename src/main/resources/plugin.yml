@@ -2,6 +2,7 @@ name: ImTelling
 version: '${project.version}'
 main: dev.crackle2k.imtelling.ImTellingPlugin
 api-version: '26.2'
+softdepend: [GrimAC]
 author: Crackle2K
 description: Snitches on admins who use operator commands, in chat and on Discord.
 
