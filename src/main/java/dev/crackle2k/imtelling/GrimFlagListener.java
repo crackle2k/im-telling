@@ -38,6 +38,12 @@ public final class GrimFlagListener {
 
         String player = event.getUser().getName();
         String check = event.getCheck().getCheckName();
+
+        // Report each player+check combination only once (until they rejoin);
+        // Grim can flag the same check dozens of times in seconds.
+        if (!plugin.markDetection(player + "|" + check)) {
+            return;
+        }
         String violations = String.format(Locale.ROOT, "%.1f", event.getViolations());
         String verbose = event.getVerbose() == null ? "" : event.getVerbose();
 

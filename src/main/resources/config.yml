@@ -43,6 +43,13 @@ watch-console: true
 # Off by default -- otherwise an admin could just exempt themselves. Sneaky.
 exempt-permission-enabled: false
 
+# Minimum seconds between alerts, so repeated triggers don't spam chat
+# and Discord. Alerts arriving during the cooldown are held and sent
+# together when it ends; duplicate messages are dropped. 0 disables.
+# Grim detections are additionally reported only once per player+check
+# until the player rejoins.
+alert-cooldown-seconds: 10
+
 # Player names that are never reported (case-insensitive).
 exempt-players: []
 #  - TrustedOwner

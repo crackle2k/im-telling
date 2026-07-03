@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
@@ -40,6 +41,11 @@ public final class CommandSnitchListener implements Listener {
         if (isWatched(command)) {
             snitch(event.getSender().getName(), command);
         }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        plugin.clearDetections(event.getPlayer().getName());
     }
 
     // RemoteServerCommandEvent (RCON) has its own HandlerList on modern Paper,
