@@ -1,0 +1,72 @@
+# ImTelling configuration
+# Snitches on admins who use operator commands.
+
+# Commands to watch for (without the leading slash, lowercase).
+# Aliases are matched literally, so list both e.g. "tp" and "teleport".
+watched-commands:
+  - give
+  - gamemode
+  - gm
+  - op
+  - deop
+  - tp
+  - teleport
+  - tphere
+  - kill
+  - ban
+  - ban-ip
+  - pardon
+  - kick
+  - whitelist
+  - effect
+  - enchant
+  - xp
+  - experience
+  - summon
+  - setblock
+  - fill
+  - clone
+  - clear
+  - difficulty
+  - defaultgamemode
+  - time
+  - weather
+  - gamerule
+  - stop
+  - restart
+  - reload
+
+# Also snitch on commands run from the server console.
+watch-console: true
+
+# If true, players with the "imtelling.exempt" permission are never reported.
+# Off by default -- otherwise an admin could just exempt themselves. Sneaky.
+exempt-permission-enabled: false
+
+# Player names that are never reported (case-insensitive).
+exempt-players: []
+#  - TrustedOwner
+
+minecraft:
+  # Broadcast alerts in-game.
+  enabled: true
+  # "everyone" broadcasts to all players; "permission" only to players
+  # with the "imtelling.notify" permission (plus the console).
+  audience: everyone
+  # Placeholders: {player}, {command}
+  format: '<red><bold>SNITCH</bold></red> <yellow>{player}</yellow> <gray>used</gray> <white>{command}</white>'
+
+discord:
+  # Broadcast alerts to a Discord channel using a bot.
+  #
+  # Setup:
+  #   1. Create a bot at https://discord.com/developers/applications and copy its token.
+  #   2. Invite it to your server with the "Send Messages" and "View Channel" permissions.
+  #   3. Enable Developer Mode in Discord, right-click your alerts channel, "Copy Channel ID".
+  #
+  # KEEP THE TOKEN SECRET. Anyone with it controls your bot.
+  enabled: false
+  bot-token: ''
+  channel-id: ''
+  # Placeholders: {player}, {command}
+  format: ':rotating_light: **{player}** used `{command}`'

@@ -1,0 +1,23 @@
+name: ImTelling
+version: '${project.version}'
+main: dev.crackle2k.imtelling.ImTellingPlugin
+api-version: '26.2'
+author: Crackle2K
+description: Snitches on admins who use operator commands, in chat and on Discord.
+
+commands:
+  imtelling:
+    description: Reload the ImTelling configuration.
+    usage: /imtelling reload
+    permission: imtelling.admin
+
+permissions:
+  imtelling.admin:
+    description: Manage the ImTelling plugin.
+    default: op
+  imtelling.notify:
+    description: Receive in-game snitch alerts.
+    default: op
+  imtelling.exempt:
+    description: Never get snitched on. Disabled unless exempt-permission-enabled is true in config.
+    default: false
