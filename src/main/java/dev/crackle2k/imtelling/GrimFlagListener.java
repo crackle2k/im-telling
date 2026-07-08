@@ -6,10 +6,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Locale;
 
-/**
- * Relays GrimAC flag events to Minecraft chat and Discord through Grim's
- * event bus. Only hooked when GrimAC is installed (softdepend).
- */
 public final class GrimFlagListener {
 
     private final ImTellingPlugin plugin;
@@ -18,7 +14,6 @@ public final class GrimFlagListener {
         this.plugin = plugin;
     }
 
-    /** Subscribes to Grim's event bus once its API is ready. */
     public void hook() {
         GrimAPIProvider.getAsync().thenAccept(api -> {
             api.getEventBus().subscribe(plugin, FlagEvent.class, this::onFlag);
@@ -39,8 +34,6 @@ public final class GrimFlagListener {
         String player = event.getUser().getName();
         String check = event.getCheck().getCheckName();
 
-        // Report each player+check combination only once (until they rejoin);
-        // Grim can flag the same check dozens of times in seconds.
         if (!plugin.markDetection(player + "|" + check)) {
             return;
         }
@@ -48,14 +41,14 @@ public final class GrimFlagListener {
         String verbose = event.getVerbose() == null ? "" : event.getVerbose();
 
         String minecraftMessage = config.getString("grim.minecraft-format",
-                        "<dark_red><bold>GRIM</bold></dark_red> <yellow>{player}</yellow> <gray>failed</gray> <white>{check}</white> <gray>(VL {violations})</gray>")
+                        "<dark_red><bold>GRIM</bold></dark_red> <dark_gray>>></dark_gray> <yellow>{player}</yellow> <gray>failed</gray> <white>{check}</white> <gray>(VL {violations})</gray>")
                 .replace("{player}", player)
                 .replace("{check}", check)
                 .replace("{violations}", violations)
                 .replace("{verbose}", verbose);
 
         String discordMessage = config.getString("grim.discord-format",
-                        ":no_entry: **{player}** failed **{check}** (VL {violations}) `{verbose}`")
+                        ":no_entry: **GRIM** >> **{player}** failed **{check}** (VL {violations}) `{verbose}`")
                 .replace("{player}", player)
                 .replace("{check}", check)
                 .replace("{violations}", violations)

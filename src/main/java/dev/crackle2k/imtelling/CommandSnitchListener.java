@@ -48,8 +48,6 @@ public final class CommandSnitchListener implements Listener {
         plugin.clearDetections(event.getPlayer().getName());
     }
 
-    // RemoteServerCommandEvent (RCON) has its own HandlerList on modern Paper,
-    // so a ServerCommandEvent handler alone never sees RCON commands.
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onRemoteCommand(RemoteServerCommandEvent event) {
         onConsoleCommand(event);
@@ -64,14 +62,12 @@ public final class CommandSnitchListener implements Listener {
                 .anyMatch(name -> name.equalsIgnoreCase(player.getName()));
     }
 
-    /** Expects the full command line including the leading slash. */
     private boolean isWatched(String commandLine) {
         String root = commandLine.substring(1).stripLeading();
         int space = root.indexOf(' ');
         if (space != -1) {
             root = root.substring(0, space);
         }
-        // Strip a plugin namespace like "minecraft:give".
         int colon = root.indexOf(':');
         if (colon != -1) {
             root = root.substring(colon + 1);
@@ -84,10 +80,10 @@ public final class CommandSnitchListener implements Listener {
         FileConfiguration config = plugin.getConfig();
 
         String minecraftMessage = config.getString("minecraft.format",
-                        "<red><bold>SNITCH</bold></red> <yellow>{player}</yellow> <gray>used</gray> <white>{command}</white>")
+                        "<red><bold>SNITCH</bold></red> <dark_gray>>></dark_gray> <yellow>{player}</yellow> <gray>used</gray> <white>{command}</white>")
                 .replace("{player}", playerName)
                 .replace("{command}", command);
-        String discordMessage = config.getString("discord.format", ":rotating_light: **{player}** used `{command}`")
+        String discordMessage = config.getString("discord.format", ":rotating_light: **SNITCH** >> **{player}** used `{command}`")
                 .replace("{player}", playerName)
                 .replace("{command}", command);
 

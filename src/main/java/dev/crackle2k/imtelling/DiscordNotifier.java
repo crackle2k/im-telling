@@ -6,11 +6,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-/**
- * Posts messages to a Discord channel through the bot REST API.
- * No Discord library needed: a bot token plus a channel ID is enough
- * to call POST /channels/{id}/messages.
- */
 public final class DiscordNotifier {
 
     private static final String API_URL = "https://discord.com/api/v10/channels/%s/messages";
@@ -24,7 +19,6 @@ public final class DiscordNotifier {
         this.plugin = plugin;
     }
 
-    /** Sends asynchronously; never blocks the server thread. */
     public void send(String message) {
         String token = plugin.getConfig().getString("discord.bot-token", "");
         String channelId = plugin.getConfig().getString("discord.channel-id", "");

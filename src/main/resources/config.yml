@@ -61,7 +61,7 @@ minecraft:
   # with the "imtelling.notify" permission (plus the console).
   audience: everyone
   # Placeholders: {player}, {command}
-  format: '<red><bold>SNITCH</bold></red> <yellow>{player}</yellow> <gray>used</gray> <white>{command}</white>'
+  format: '<red><bold>SNITCH</bold></red> <dark_gray>>></dark_gray> <yellow>{player}</yellow> <gray>used</gray> <white>{command}</white>'
 
 discord:
   # Broadcast alerts to a Discord channel using a bot.
@@ -76,7 +76,7 @@ discord:
   bot-token: ''
   channel-id: ''
   # Placeholders: {player}, {command}
-  format: ':rotating_light: **{player}** used `{command}`'
+  format: ':rotating_light: **SNITCH** >> **{player}** used `{command}`'
 
 grim:
   # Relay GrimAC anticheat flags to Minecraft chat and Discord.
@@ -84,5 +84,5 @@ grim:
   # minecraft.* and discord.* toggles above.
   enabled: true
   # Placeholders: {player}, {check}, {violations}, {verbose}
-  minecraft-format: '<dark_red><bold>GRIM</bold></dark_red> <yellow>{player}</yellow> <gray>failed</gray> <white>{check}</white> <gray>(VL {violations})</gray>'
-  discord-format: ':no_entry: **{player}** failed **{check}** (VL {violations}) `{verbose}`'
+  minecraft-format: '<dark_red><bold>GRIM</bold></dark_red> <dark_gray>>></dark_gray> <yellow>{player}</yellow> <gray>failed</gray> <white>{check}</white> <gray>(VL {violations})</gray>'
+  discord-format: ':no_entry: **GRIM** >> **{player}** failed **{check}** (VL {violations}) `{verbose}`'

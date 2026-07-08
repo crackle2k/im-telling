@@ -17,12 +17,8 @@ public final class ImTellingPlugin extends JavaPlugin {
     private final Object alertLock = new Object();
     private long lastAlertMillis;
     private boolean flushScheduled;
-    // Distinct alerts that arrived during the cooldown; duplicates are dropped.
     private final java.util.LinkedHashSet<PendingAlert> pendingAlerts = new java.util.LinkedHashSet<>();
-    // Alerts already sent in the current cooldown window, so a repeat of the
-    // message that started the window is dropped too.
     private final java.util.HashSet<PendingAlert> sentThisWindow = new java.util.HashSet<>();
-    // Cheat detections (player|check) already reported this session.
     private final java.util.Set<String> reportedDetections = java.util.concurrent.ConcurrentHashMap.newKeySet();
 
     @Override
@@ -53,15 +49,7 @@ public final class ImTellingPlugin extends JavaPlugin {
         return discordNotifier;
     }
 
-    /**
-     * Sends an alert to Minecraft chat (MiniMessage format) and Discord,
-     * honoring the minecraft.* and discord.* config toggles.
-     * Safe to call from any thread.
-     */
     public void alert(String minecraftRaw, String discordMessage) {
-        // Cooldown between alerts so repeated triggers (e.g. Grim flags)
-        // don't spam chat. Alerts during the cooldown are held and sent
-        // together once it ends; duplicate messages are dropped.
         long cooldownMillis = getConfig().getLong("alert-cooldown-seconds", 10) * 1000L;
         PendingAlert alert = new PendingAlert(minecraftRaw, discordMessage);
         synchronized (alertLock) {
@@ -84,7 +72,6 @@ public final class ImTellingPlugin extends JavaPlugin {
         dispatch(minecraftRaw, discordMessage);
     }
 
-    /** Sends the distinct alerts held back during the cooldown. */
     private void flushPendingAlerts() {
         java.util.LinkedHashSet<PendingAlert> toSend;
         synchronized (alertLock) {
@@ -92,24 +79,16 @@ public final class ImTellingPlugin extends JavaPlugin {
             lastAlertMillis = System.currentTimeMillis();
             toSend = new java.util.LinkedHashSet<>(pendingAlerts);
             pendingAlerts.clear();
-            // The flush opens a new cooldown window; repeats of what was just
-            // sent stay suppressed for that window.
             sentThisWindow.clear();
             sentThisWindow.addAll(toSend);
         }
         toSend.forEach(pending -> dispatch(pending.minecraftRaw(), pending.discordMessage()));
     }
 
-    /**
-     * Records a cheat detection key ("player|check"). Returns true the first
-     * time a key is seen, false on repeats, so each detection is only
-     * reported once. Cleared for a player when they disconnect.
-     */
     public boolean markDetection(String key) {
         return reportedDetections.add(key);
     }
 
-    /** Forgets a player's reported detections so a rejoin alerts again. */
     public void clearDetections(String playerName) {
         reportedDetections.removeIf(key -> key.startsWith(playerName + "|"));
     }
@@ -130,7 +109,6 @@ public final class ImTellingPlugin extends JavaPlugin {
             if (getServer().isPrimaryThread()) {
                 broadcast.run();
             } else {
-                // Grim fires flag events off the main thread.
                 getServer().getScheduler().runTask(this, broadcast);
             }
         }
