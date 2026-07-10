@@ -1,6 +1,6 @@
 # I'm Telling
 
-A Paper plugin that snitches on staff. It watches for operator commands like `/give`, `/gamemode`, `/op`, and `/tp`, and relays GrimAC anticheat flags. Alerts are broadcast in Minecraft chat and, optionally, to a Discord channel.
+Paper plugin that snitches on staff. It watches for operator commands like `/give`, `/gamemode`, `/op`, and `/tp`, and relays GrimAC anticheat flags. Alerts are broadcast in Minecraft chat and, optionally, to a Discord channel.
 
 Built for **Paper 26.2**. Requires **Java 25** to build and run.
 
